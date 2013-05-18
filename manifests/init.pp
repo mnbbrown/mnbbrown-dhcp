@@ -38,6 +38,8 @@
 class dhcp(
 	$ddns_update = 'none',
 	$authoritative = false,
+	$default-lease-time = 12600,
+	$max_lease_time = 24000,
 	$opts = [],
 	$autoupdate = false,
 ) {
@@ -56,11 +58,11 @@ class dhcp(
 
 	file { '/etc/dhcp/dhcpd.conf':
 		ensure => present,
-		require => [ Package['isc-dhcp-server'], File['/etc/dhcp/subnets.d'] ],
+		require => [ Package['isc-dhcp-server'], File['/etc/dhcp/subnets.d/'] ],
 		owner => 'root',
 		group => 'root',
 		mode => '0644', 
-		source => template('dhcp/dhcpd.conf.erb')
+		content => template('dhcp/dhcpd.conf.erb')
 	}
 
 	service { 'isc-dhcp-server':
@@ -129,7 +131,7 @@ define dhcp::subnet(
 	file { "${subnet}.conf":
 		ensure => $ensure,
 		path => "/etc/dhcp/subnets.d/${subnet}.conf",
-		source => template('dhcp/subnet.conf.erb'),
+		content => template('dhcp/subnet.conf.erb'),
 		owner => 'root',
 		group => 'root',
 		mode => '0644',
