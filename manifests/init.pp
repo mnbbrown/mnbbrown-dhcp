@@ -60,7 +60,7 @@ class dhcp(
 		owner => 'root',
 		group => 'root',
 		mode => '0644', 
-		template => template('dhcp/dhcpd.conf.erb')
+		source => template('dhcp/dhcpd.conf.erb')
 	}
 
 	service { 'isc-dhcp-server':
@@ -128,7 +128,7 @@ define dhcp::subnet(
 	file { "${subnet}.conf":
 		ensure => $ensure,
 		path => "/etc/dhcp/subnets.d/${subnet}.conf",
-		template => template('dhcp/subnet.conf.erb'),
+		source => template('dhcp/subnet.conf.erb'),
 		owner => 'root',
 		group => 'root',
 		mode => '0644',
