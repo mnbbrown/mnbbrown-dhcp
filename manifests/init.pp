@@ -135,11 +135,12 @@ define dhcp::subnet(
 		owner => 'root',
 		group => 'root',
 		mode => '0644',
-		require => [ Package['dhcp'], File['/etc/dhcp/subnets.d/'] ],
+		require => [ Package['isc-dhcp-server'], File['/etc/dhcp/subnets.d/'] ],
 		notify => Service['isc-dhcp-server']
 	}
 
-	concat::fragment {"dhcp.subnet.${subnet}":
+	concat::fragment {"dhcp.subnet.${subnet}":,
+		ensure => presnet,
 		target  => "/etc/dhcp/dhcpd.conf",
 		content => "include \"/etc/dhcp/subnets.d/${subnet}.conf\";\n",
 	}
