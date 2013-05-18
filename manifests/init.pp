@@ -38,7 +38,7 @@
 class dhcp(
 	$ddns_update = 'none',
 	$authoritative = false,
-	$default-lease-time = 12600,
+	$default_lease_time = 12600,
 	$max_lease_time = 24000,
 	$opts = [],
 	$autoupdate = false,
