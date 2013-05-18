@@ -80,6 +80,7 @@ class dhcp(
 define dhcp::subnet(
 	$subnet = $title,
 	$netmask = '255.255.255.0',
+	$routers = undef,
 	$range_from = undef,
 	$range_to = undef,
 	$broadcast = undef,
@@ -118,7 +119,7 @@ define dhcp::subnet(
 		fail("The next server for pxe you have defined is within the dhcp lease range")	
 	}
 
-	if !defined(File['/etc/dhcp/subnets.d']) {
+	if !defined(File['/etc/dhcp/subnets.d/']) {
 		file { '/etc/dhcp/subnets.d':
 			ensure  => directory,
 			require => Package['dhcp'],
@@ -132,12 +133,11 @@ define dhcp::subnet(
 		owner => 'root',
 		group => 'root',
 		mode => '0644',
-		require => [ Package['dhcp'], File['/etc/dhcp/subnets.d'] ],
+		require => [ Package['dhcp'], File['/etc/dhcp/subnets.d/'] ],
 		notify => Service['isc-dhcp-server']
 	}
 
 	concat::fragment {"dhcp.subnet.${subnet}":
-		ensure  => $ensure_shared,
 		target  => "/etc/dhcp/dhcpd.conf",
 		content => "include \"/etc/dhcp/subnets.d/${subnet}.conf\";\n",
 	}
