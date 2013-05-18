@@ -136,4 +136,10 @@ class dhcp::subnet(
 		notify => Service['isc-dhcp-server']
 	}
 
+	concat::fragment {"dhcp.subnet.${subnet}":
+		ensure  => $ensure_shared,
+		target  => "/etc/dhcp/dhcpd.conf",
+		content => "include \"/etc/dhcp/subnets.d/${subnet}.conf\";\n",
+	}
+
 }
