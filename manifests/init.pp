@@ -77,7 +77,7 @@ class dhcp(
 	}
 }
 
-class dhcp::subnet(
+define dhcp::subnet(
 	$subnet => $title,
 	$netmask => '255.255.255.0',
 	$range_from => undef,
