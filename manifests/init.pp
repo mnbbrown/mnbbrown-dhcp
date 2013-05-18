@@ -102,7 +102,7 @@ define dhcp::subnet(
 		fail("You must define both range_to and range_from")
 	}
 
-	if !ip_within_range($range_from, $subnet) or !ip_within_range($range_to, $subnet) {
+	if !ip_within_range($range_from, "${subnet}/${netmask}") or !ip_within_range($range_to, "${subnet}/${netmask}") {
 		fail("The range defined must within the subnet")
 	}
 
