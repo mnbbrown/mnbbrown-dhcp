@@ -15,7 +15,7 @@ subnet <%= @subnet %> netmask <%= @netmask %> {
         option domain-name-servers <%= @domain_name_servers.join(', ') %>;
         
         <% if @pxe %>
-        filename "<%= @pxe_filename %>"
+        filename "<%= @pxe_filename %>";
         next-server "<%= @pxe_next_server %>";
         <% end %>
 }
