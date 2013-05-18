@@ -1,0 +1,21 @@
+subnet <%= @subnet %> netmask <%= @subnet_mask %> {
+
+        range <%= @range_from %> <%= @range_to %>;
+        option routers <%= @routers %>;
+        option broadcast-address <%= @broadcast_address %>;
+        option subnet-mask <%= @subnet_mask %>;
+        
+        <% unless @ntp_server.empty? %>
+        option ntp-servers <%= @ntp_server %>;
+        <% end %>
+        
+        <% unless @domain_name.empty? %>
+        option domain-name <%= @domain_name %>;
+        <% end %>
+        option domain-name-servers <%= @domain_name_servers %>;
+        
+        <% if @pxe %>
+        filename "<%= @pxe_filename %>"
+        next-server "<%= @pxe_next_server %>";
+        <% end %>
+}

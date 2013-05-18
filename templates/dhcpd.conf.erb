@@ -1,0 +1,24 @@
+
+# The ddns-updates-style parameter controls whether or not the server will
+# attempt to do a DNS update when a lease is confirmed. We default to the
+# behavior of the version 2 packages ('none', since DHCP v2 didn't
+# have support for DDNS.)
+
+ddns-updates <%= @ddns_update %>;
+ddns-update-style interim;
+update-static-leases on;
+
+# If this DHCP server is the official DHCP server for the local
+# network, the authoritative directive should be uncommented.
+<% unless @authoritative -%>#<%- end -%>authoritative;
+
+# Other Options
+default-lease-time <%= @default_lease_time %>;
+max-lease-time <%= @max_lease_time %>;
+<% unless @opts.empty? -%>
+	<%= @opts.join(";\n") %>;
+<% end -%>
+
+# Use this to send dhcp log messages to a different log file (you also
+# have to hack syslog.conf to complete the redirection).
+log-facility local7;
