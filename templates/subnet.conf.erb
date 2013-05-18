@@ -1,18 +1,18 @@
-subnet <%= @subnet %> netmask <%= @subnet_mask %> {
+subnet <%= @subnet %> netmask <%= @netmask %> {
 
         range <%= @range_from %> <%= @range_to %>;
         option routers <%= @routers %>;
         option broadcast-address <%= @broadcast %>;
-        option subnet-mask <%= @subnet_mask %>;
-        
+        option subnet-mask <%= @netmask %>;
+
         <% if @ntp_server %>
         option ntp-servers <%= @ntp_server %>;
         <% end %>
         
         <% if @domain_name %>
-        option domain-name <%= @domain_name %>;
+        option domain-name "<%= @domain_name %>";
         <% end %>
-        option domain-name-servers <%= @domain_name_servers %>;
+        option domain-name-servers <%= @domain_name_servers.join(', ') %>;
         
         <% if @pxe %>
         filename "<%= @pxe_filename %>"

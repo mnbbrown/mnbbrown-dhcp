@@ -4,8 +4,7 @@
 # behavior of the version 2 packages ('none', since DHCP v2 didn't
 # have support for DDNS.)
 
-ddns-updates <%= @ddns_update %>;
-ddns-update-style interim;
+ddns-update-style <%= @ddns_update %>;
 update-static-leases on;
 
 # If this DHCP server is the official DHCP server for the local
@@ -22,3 +21,4 @@ max-lease-time <%= @max_lease_time %>;
 # Use this to send dhcp log messages to a different log file (you also
 # have to hack syslog.conf to complete the redirection).
 log-facility local7;
+

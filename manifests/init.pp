@@ -1,40 +1,3 @@
-# == Class: dhcp
-#
-# Full description of class dhcp here.
-#
-# === Parameters
-#
-# Document parameters here.
-#
-# [*sample_parameter*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
-#
-# === Variables
-#
-# Here you should define a list of variables that this module would require.
-#
-# [*sample_variable*]
-#   Explanation of how this variable affects the funtion of this class and if it
-#   has a default. e.g. "The parameter enc_ntp_servers must be set by the
-#   External Node Classifier as a comma separated list of hostnames." (Note,
-#   global variables should not be used in preference to class parameters  as of
-#   Puppet 2.6.)
-#
-# === Examples
-#
-#  class { dhcp:
-#    servers => [ 'pool.ntp.org', 'ntp.local.company.com' ]
-#  }
-#
-# === Authors
-#
-# Author Name <author@domain.com>
-#
-# === Copyright
-#
-# Copyright 2013 Your name here, unless otherwise noted.
-#
 class dhcp(
 	$ddns_update = 'none',
 	$authoritative = false,
@@ -56,13 +19,17 @@ class dhcp(
 		ensure => $package_ensure,
 	}
 
-	file { '/etc/dhcp/dhcpd.conf':
-		ensure => present,
+	concat { '/etc/dhcp/dhcpd.conf':
 		require => [ Package['isc-dhcp-server'], File['/etc/dhcp/subnets.d/'] ],
 		owner => 'root',
 		group => 'root',
-		mode => '0644', 
-		content => template('dhcp/dhcpd.conf.erb')
+		mode => '0644'
+	}
+
+	concat::fragment{"dhcpd.config":
+		target  => "/etc/dhcp/dhcpd.conf",
+		order   => 00,
+		content => template("dhcp/dhcpd.conf.erb")
 	}
 
 	service { 'isc-dhcp-server':
@@ -75,7 +42,7 @@ class dhcp(
 
 	file { '/etc/dhcp/subnets.d':
 			ensure  => directory,
-			require => Package['dhcp']
+			require => Package['isc-dhcp-server']
 	}
 }
 
@@ -88,7 +55,7 @@ define dhcp::subnet(
 	$broadcast = undef,
 	$ntp_server = undef,
 	$domain_name = undef,
-	$domain_name_servers = '8.8.8.8 8.8.8.4',
+	$domain_name_servers = "8.8.8.8, 8.8.8.4",
 	$pxe = false,
 	$pxe_filename = 'pxelinux.0',
 	$pxe_next_server = $::ipaddress,
@@ -109,22 +76,23 @@ define dhcp::subnet(
 		fail("The range defined must within the subnet")
 	}
 
-	if ip_within_range($broadcast, $range_from, $range_to) {
+	if $broadcast and ip_within_range($broadcast, $range_from, $range_to) {
 		fail("The broadcast address cannot be within the dhcp lease range")	
 	}
 
-	if ip_within_range($ntp_server, $range_from, $range_to) {
+
+	if $ntp_server and ip_within_range($ntp_server, $range_from, $range_to) {
 		fail("The ntp server you have defined is within the dhcp lease range")	
 	}
 
-	if ip_within_range($pxe_next_server, $range_from, $range_to) {
+	if $pxe_next_server and ip_within_range($pxe_next_server, $range_from, $range_to) {
 		fail("The next server for pxe you have defined is within the dhcp lease range")	
 	}
 
 	if !defined(File['/etc/dhcp/subnets.d/']) {
 		file { '/etc/dhcp/subnets.d':
 			ensure  => directory,
-			require => Package['dhcp'],
+			require => Package['isc-dhcp-server'],
 		}
 	}
 
@@ -139,8 +107,10 @@ define dhcp::subnet(
 		notify => Service['isc-dhcp-server']
 	}
 
+	#concat { "/etc/dhcp/dhcpd.conf" : }
+
 	concat::fragment {"dhcp.subnet.${subnet}":,
-		ensure => presnet,
+		ensure => $ensure,
 		target  => "/etc/dhcp/dhcpd.conf",
 		content => "include \"/etc/dhcp/subnets.d/${subnet}.conf\";\n",
 	}
