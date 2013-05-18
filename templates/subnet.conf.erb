@@ -2,14 +2,14 @@ subnet <%= @subnet %> netmask <%= @subnet_mask %> {
 
         range <%= @range_from %> <%= @range_to %>;
         option routers <%= @routers %>;
-        option broadcast-address <%= @broadcast_address %>;
+        option broadcast-address <%= @broadcast %>;
         option subnet-mask <%= @subnet_mask %>;
         
-        <% unless @ntp_server.empty? %>
+        <% if @ntp_server %>
         option ntp-servers <%= @ntp_server %>;
         <% end %>
         
-        <% unless @domain_name.empty? %>
+        <% if @domain_name %>
         option domain-name <%= @domain_name %>;
         <% end %>
         option domain-name-servers <%= @domain_name_servers %>;
