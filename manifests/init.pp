@@ -36,10 +36,10 @@
 # Copyright 2013 Your name here, unless otherwise noted.
 #
 class dhcp(
-	$ddns_update => 'none',
-	$authoritative => false,
-	$opts => [],
-	$autoupdate => false,
+	$ddns_update = 'none',
+	$authoritative = false,
+	$opts = [],
+	$autoupdate = false,
 ) {
 
 	if $autoupdate == true {
@@ -78,18 +78,18 @@ class dhcp(
 }
 
 define dhcp::subnet(
-	$subnet => $title,
-	$netmask => '255.255.255.0',
-	$range_from => undef,
-	$range_to => undef,
-	$broadcast => undef,
-	$ntp_server => undef,
-	$domain_name => undef,
-	$domain_name_servers => '8.8.8.8 8.8.8.4',
-	$pxe => false,
-	$pxe_filename => 'pxelinux.0',
-	$pxe_next_server => $::ipaddress,
-	$ensure => 'present'
+	$subnet = $title,
+	$netmask = '255.255.255.0',
+	$range_from = undef,
+	$range_to = undef,
+	$broadcast = undef,
+	$ntp_server = undef,
+	$domain_name = undef,
+	$domain_name_servers = '8.8.8.8 8.8.8.4',
+	$pxe = false,
+	$pxe_filename = 'pxelinux.0',
+	$pxe_next_server = $::ipaddress,
+	$ensure = 'present'
 ) {
 
 	if !defined(Class['dhcp']) {
