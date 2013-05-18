@@ -16,6 +16,6 @@ subnet <%= @subnet %> netmask <%= @netmask %> {
         
         <% if @pxe %>
         filename "<%= @pxe_filename %>";
-        next-server "<%= @pxe_next_server %>";
+        next-server <%= @pxe_next_server %>;
         <% end %>
 }
